@@ -1,0 +1,27 @@
+# for mac
+.DS_Store
+.DS_Store?
+
+*.log
+/target/*
+/.settings/*
+/.project
+/.pydevproject
+/target/
+/logs/*
+
+# python
+*.pyc
+# for intellij
+**/out/*
+**/target/*
+# 这两个文件是必须的，否则项目无法加载
+#**/*.iml
+#**/.idea/misc.xml
+
+# ignore .idea
+**/.idea/workspace.xml
+**/.idea/dictionaries
+**/.idea/vcs.xml
+**/.idea/copyright
+**/.idea/inspectionProfiles

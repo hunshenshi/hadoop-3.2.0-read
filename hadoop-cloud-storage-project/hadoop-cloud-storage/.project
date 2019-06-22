@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+  <name>hadoop-cloud-storage</name>
+  <comment>Apache Hadoop Cloud Storage. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>hadoop-annotations</project>
+    <project>hadoop-common</project>
+    <project>hadoop-auth</project>
+    <project>hadoop-aliyun</project>
+    <project>hadoop-aws</project>
+    <project>hadoop-azure</project>
+    <project>hadoop-azure-datalake</project>
+    <project>hadoop-openstack</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
