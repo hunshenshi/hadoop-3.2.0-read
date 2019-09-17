@@ -618,6 +618,7 @@ public class FederationInterceptor extends AbstractRequestInterceptor {
        * responses will be collected and merged. In addition, it also returns
        * the newly registered UAMs.
        */
+//      会注册UAM
       Registrations newRegistrations = sendRequestsToResourceManagers(requests);
 
       // Wait for the first async response to arrive
@@ -1388,6 +1389,10 @@ public class FederationInterceptor extends AbstractRequestInterceptor {
       } else {
         homeResponse.setUpdatedNodes(otherResponse.getUpdatedNodes());
       }
+    }
+
+    if (otherResponse.getApplicationPriority() != null) {
+      homeResponse.setApplicationPriority(otherResponse.getApplicationPriority());
     }
 
     homeResponse.setNumClusterNodes(

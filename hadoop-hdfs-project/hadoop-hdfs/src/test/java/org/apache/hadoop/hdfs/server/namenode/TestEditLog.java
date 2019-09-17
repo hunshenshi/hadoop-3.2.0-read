@@ -54,6 +54,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.hdfs.*;
+import org.apache.hadoop.hdfs.protocol.Block;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -64,11 +67,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.AclEntry;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.fs.permission.PermissionStatus;
-import org.apache.hadoop.hdfs.DFSConfigKeys;
-import org.apache.hadoop.hdfs.DFSInotifyEventInputStream;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
-import org.apache.hadoop.hdfs.HdfsConfiguration;
-import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
@@ -1705,5 +1703,82 @@ public class TestEditLog {
       }
       LogManager.getRootLogger().removeAppender(appender);
     }
+  }
+
+
+  /**
+   * Test edits can be writen and read without ErasureCoding supported.
+   */
+  @Test
+  public void testEditLogWithoutErasureCodingSupported()
+          throws IOException {
+    Configuration conf = getConf();
+    MiniDFSCluster cluster = null;
+
+    // ERASURECODING not supported
+    int logVersion = -63;
+    System.out.println(NameNodeLayoutVersion.supports(
+            NameNodeLayoutVersion.Feature.ERASURE_CODING, logVersion));
+    assertFalse(NameNodeLayoutVersion.supports(
+            NameNodeLayoutVersion.Feature.ERASURE_CODING, logVersion));
+
+    cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
+    cluster.waitActive();
+
+    final FSNamesystem namesystem = cluster.getNamesystem();
+    FSImage fsimage = namesystem.getFSImage();
+    FileSystem fileSys = cluster.getFileSystem();
+    final FSEditLog editLog = fsimage.getEditLog();
+    editLog.editLogStream.setCurrentLogVersion(logVersion);
+    // Write new version edit log
+    long txid = editLog.rollEditLog(logVersion);
+
+    String testDir = "/test";
+    String testFile = "testfile_001";
+    String testFilePath = testDir + "/" + testFile;
+
+    fileSys.mkdirs(new Path(testDir), new FsPermission("755"));
+
+    // Create a file
+    Path p = new Path(testFilePath);
+    DFSTestUtil.createFile(fileSys, p, 0, (short) 1, 1);
+
+    long blkId = 1;
+    long blkNumBytes = 1024;
+    long timestamp = 1426222918;
+    // Add a block to the file
+    BlockInfoContiguous blockInfo =
+            new BlockInfoContiguous(
+                    new Block(blkId, blkNumBytes, timestamp),
+                    (short)1);
+    INodeFile file
+            = (INodeFile)namesystem.getFSDirectory().getINode(testFilePath);
+    file.addBlock(blockInfo);
+    file.toUnderConstruction("testClient", "testMachine");
+
+    // Write edit log
+    editLog.logAddBlock(testFilePath, file);
+    editLog.rollEditLog(logVersion);
+
+//    editLog.logCloseFile(testFilePath, file);
+    // Read edit log
+    Collection<EditLogInputStream> editStreams
+            = editLog.selectInputStreams(txid, txid + 1);
+    EditLogInputStream inputStream = null;
+    for (EditLogInputStream s : editStreams) {
+      if (s.getFirstTxId() == txid) {
+        inputStream = s;
+        break;
+      }
+    }
+    assertNotNull(inputStream);
+    int readLogVersion = inputStream.getVersion(false);
+    assertEquals(logVersion, readLogVersion);
+    FSEditLogLoader loader = new FSEditLogLoader(namesystem, 0);
+    long records = loader.loadFSEdits(inputStream, txid);
+    assertTrue(records > 0);
+
+    editLog.close();
+    cluster.shutdown();
   }
 }

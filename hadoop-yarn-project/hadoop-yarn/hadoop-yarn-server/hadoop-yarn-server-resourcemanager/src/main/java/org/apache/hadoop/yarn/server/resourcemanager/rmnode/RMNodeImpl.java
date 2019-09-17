@@ -56,6 +56,7 @@ import org.apache.hadoop.yarn.api.records.NodeState;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceOption;
 import org.apache.hadoop.yarn.api.records.ResourceUtilization;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
@@ -117,6 +118,9 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
   private final NodeId nodeId;
   private final RMContext context;
   private final String hostName;
+  // add subClusterId
+  private String subCluster;
+
   private final int commandPort;
   private int httpPort;
   private final String nodeAddress; // The containerManager address
@@ -367,12 +371,12 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
       int cmPort, int httpPort, Node node, Resource capability,
       String nodeManagerVersion) {
     this(nodeId, context, hostName, cmPort, httpPort, node, capability,
-        nodeManagerVersion, null);
+        nodeManagerVersion, null, YarnConfiguration.DEFAULT_RM_CLUSTER_ID);
   }
 
   public RMNodeImpl(NodeId nodeId, RMContext context, String hostName,
       int cmPort, int httpPort, Node node, Resource capability,
-      String nodeManagerVersion, Resource physResource) {
+      String nodeManagerVersion, Resource physResource, String subCluster) {
     this.nodeId = nodeId;
     this.context = context;
     this.hostName = hostName;
@@ -399,6 +403,8 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
     this.nodeUpdateQueue = new ConcurrentLinkedQueue<UpdatedContainerInfo>();
 
     this.containerAllocationExpirer = context.getContainerAllocationExpirer();
+
+    this.subCluster = subCluster;
   }
 
   @Override
@@ -409,6 +415,11 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
   @Override
   public String getHostName() {
     return hostName;
+  }
+
+  @Override
+  public String getSubCluster() {
+    return subCluster;
   }
 
   @Override

@@ -160,6 +160,7 @@ public class ResourceManager extends CompositeService
 
   private static final Log LOG = LogFactory.getLog(ResourceManager.class);
   private static long clusterTimeStamp = System.currentTimeMillis();
+  private String clusterId;
 
   /*
    * UI2 webapp name
@@ -226,6 +227,10 @@ public class ResourceManager extends CompositeService
 
   public static long getClusterTimeStamp() {
     return clusterTimeStamp;
+  }
+
+  public String getClusterId() {
+    return clusterId;
   }
 
   public String getRMLoginUser() {
@@ -345,6 +350,8 @@ public class ResourceManager extends CompositeService
 
     registerMXBean();
 
+    clusterId = conf.get(YarnConfiguration.RM_CLUSTER_ID,
+        YarnConfiguration.DEFAULT_RM_CLUSTER_ID);
     super.serviceInit(this.conf);
   }
 

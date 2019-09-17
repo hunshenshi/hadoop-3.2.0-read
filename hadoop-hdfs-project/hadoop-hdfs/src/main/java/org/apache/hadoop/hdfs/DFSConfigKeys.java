@@ -1117,6 +1117,11 @@ public class DFSConfigKeys extends CommonConfigurationKeys {
   public static final String DFS_DATANODE_XCEIVER_STOP_TIMEOUT_MILLIS_KEY = "dfs.datanode.xceiver.stop.timeout.millis";
   public static final long   DFS_DATANODE_XCEIVER_STOP_TIMEOUT_MILLIS_DEFAULT = 60000;
 
+
+  public static final String DFS_DATANODE_DISK_CHECK_INTERVAL_KEY =
+          "dfs.datanode.disk.check.interval";
+  public static final int    DFS_DATANODE_DISK_CHECK_INTERVAL_DEFAULT = 5000;
+
   // WebHDFS retry policy
   @Deprecated
   public static final String  DFS_HTTP_CLIENT_RETRY_POLICY_ENABLED_KEY =

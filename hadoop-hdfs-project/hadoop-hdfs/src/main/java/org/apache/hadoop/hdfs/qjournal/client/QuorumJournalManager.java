@@ -410,7 +410,7 @@ public class QuorumJournalManager implements JournalManager {
         DFSConfigKeys.DFS_HA_TAILEDITS_INPROGRESS_KEY,
         DFSConfigKeys.DFS_HA_TAILEDITS_INPROGRESS_DEFAULT);
     return new QuorumOutputStream(loggers, txId, outputBufferCapacity,
-        writeTxnsTimeoutMs, updateCommittedTxId);
+        writeTxnsTimeoutMs, updateCommittedTxId, layoutVersion);
   }
 
   @Override

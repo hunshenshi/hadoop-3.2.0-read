@@ -32,7 +32,8 @@ import org.apache.hadoop.yarn.util.YarnVersionInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ClusterInfo {
 
-  protected long id;
+  protected String id;
+  protected long timestamp;
   protected long startedOn;
   protected STATE state;
   protected HAServiceProtocol.HAServiceState haState;
@@ -51,7 +52,8 @@ public class ClusterInfo {
   public ClusterInfo(ResourceManager rm) {
     long ts = ResourceManager.getClusterTimeStamp();
 
-    this.id = ts;
+    this.id = rm.getClusterId();
+    this.timestamp = ts;
     this.state = rm.getServiceState();
     this.haState = rm.getRMContext().getHAServiceState();
     this.rmStateStoreName = rm.getRMContext().getStateStore().getClass()
@@ -103,8 +105,12 @@ public class ClusterInfo {
     return this.hadoopVersionBuiltOn;
   }
 
-  public long getClusterId() {
+  public String getClusterId() {
     return this.id;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
   }
 
   public long getStartedOn() {

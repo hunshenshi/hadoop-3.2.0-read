@@ -66,20 +66,32 @@ import com.google.common.base.Preconditions;
  * sub-cluster.
  * </p>
  *
+ * 本地性 则转发到机器所属于的集群，机器属于哪个集群由SubClusterResolver决定
+ * 如果没有解析成功，则默认转发到home sub-cluster
+ *
  * <p>
  * Rack localized {@link ResourceRequest}s are forwarded to the RMs that owns
  * the corresponding rack. Note that in some deployments each rack could be
- * striped across multiple RMs. Thsi policy respects that. If the
+ * striped across multiple RMs. Thsi policy respects that. If the                 This
  * {@link SubClusterResolver} cannot resolve this rack we default to forwarding
  * the {@link ResourceRequest} to the home sub-cluster.
  * </p>
  *
- * <p>
+ * 机架本地性 则转发到该机架属于的那个子集群。
+ * 需要注意的是一个机架可能属于多个子集群，这个策略也支持这种。
+ * 如果没有解析成功，默认转发到home sub-cluster
+ *
+ * <p> 本地性的三种情况，node rack any
  * ANY requests corresponding to node/rack local requests are forwarded only to
  * the set of RMs that owns the corresponding localized requests. The number of
  * containers listed in each ANY is proportional to the number of localized
  * container requests (associated to this ANY via the same allocateRequestId).
  * </p>
+ *
+ * ANY类型的请求会转发到资源所在节点/机架所属于的集群
+ * 相应节点/机架的本地任意请求只转发到拥有这些资源的集群
+ *
+ * container的个数
  *
  * <p>
  * ANY that are not associated to node/rack local requests are split among RMs
@@ -92,6 +104,8 @@ import com.google.common.base.Preconditions;
  * value of 0.0f means headroom is ignored and all splitting decisions are
  * proportional to the "weights" in the configuration of the policy.
  * </p>
+ *
+ * ANY请求如果没有对应的节点/机架，则根据权重和容量信息进行切分
  *
  * <p>
  * ANY of zero size are forwarded to all known subclusters (i.e., subclusters
@@ -300,7 +314,7 @@ public class LocalityMulticastAMRMProxyPolicy extends AbstractAMRMProxyPolicy {
 
     for (Map.Entry<SubClusterId, List<ResourceRequest>> entry : bookkeeper
         .getAnswer().entrySet()) {
-      // A new-cluster here will trigger new UAM luanch, which might take a long
+      // A new-cluster here will trigger new UAM luanch, which might take a long           launch
       // time. We don't want too many requests stuck in this UAM before it is
       // ready and starts heartbeating
       if (!lastHeartbeatTimeStamp.containsKey(entry.getKey())) {
@@ -493,7 +507,7 @@ public class LocalityMulticastAMRMProxyPolicy extends AbstractAMRMProxyPolicy {
     float headroomWeighting =
         1 / (float) allocationBookkeeper.getActiveAndEnabledSC().size();
 
-    // if we have headroom infomration for this sub-cluster (and we are safe
+    // if we have headroom infomration for this sub-cluster (and we are safe           information
     // from /0 issues)
     if (headroom.containsKey(targetId)
         && allocationBookkeeper.totHeadroomMemory > 0) {
@@ -643,7 +657,7 @@ public class LocalityMulticastAMRMProxyPolicy extends AbstractAMRMProxyPolicy {
     }
 
     /**
-     * Add a rack-local request to the final asnwer.
+     * Add a rack-local request to the final asnwer. answer
      */
     private void addRackRR(SubClusterId targetId, ResourceRequest rr) {
       Preconditions

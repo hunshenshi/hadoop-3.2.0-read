@@ -236,7 +236,7 @@ public abstract class RMStateStore extends AbstractService {
         }
       }
       return finalState(isFenced);
-    };
+    }
 
   }
 

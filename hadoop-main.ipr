@@ -577,6 +577,9 @@
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="1.8" />
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+  </component>
   <component name="libraryTable">
     <library name="Maven: aopalliance:aopalliance:1.0">
       <CLASSES>

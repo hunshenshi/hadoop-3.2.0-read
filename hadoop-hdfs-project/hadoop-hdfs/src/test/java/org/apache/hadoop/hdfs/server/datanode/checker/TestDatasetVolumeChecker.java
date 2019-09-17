@@ -138,7 +138,7 @@ public class TestDatasetVolumeChecker {
    *
    * @throws Exception
    */
-  @Test(timeout = 10000)
+  @Test(timeout = 100000)
   public void testCheckAllVolumes() throws Exception {
     LOG.info("Executing {}", testName.getMethodName());
 

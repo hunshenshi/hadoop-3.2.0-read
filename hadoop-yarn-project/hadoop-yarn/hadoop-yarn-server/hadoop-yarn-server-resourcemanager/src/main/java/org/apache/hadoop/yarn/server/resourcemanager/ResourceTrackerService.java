@@ -125,6 +125,9 @@ public class ResourceTrackerService extends AbstractService implements
   private boolean isDelegatedCentralizedNodeLabelsConf;
   private DynamicResourceConfiguration drConf;
 
+  // add subCluster
+  private String clusterId;
+
   private final AtomicLong timelineCollectorVersion = new AtomicLong(0);
 
   public ResourceTrackerService(RMContext rmContext,
@@ -255,6 +258,7 @@ public class ResourceTrackerService extends AbstractService implements
         YarnConfiguration.RM_RESOURCE_TRACKER_ADDRESS,
         YarnConfiguration.DEFAULT_RM_RESOURCE_TRACKER_ADDRESS,
         server.getListenerAddress());
+    clusterId = conf.get(YarnConfiguration.RM_CLUSTER_ID, YarnConfiguration.DEFAULT_RM_CLUSTER_ID);
   }
 
   @Override
@@ -397,7 +401,7 @@ public class ResourceTrackerService extends AbstractService implements
         .getCurrentKey());
 
     RMNode rmNode = new RMNodeImpl(nodeId, rmContext, host, cmPort, httpPort,
-        resolve(host), capability, nodeManagerVersion, physicalResource);
+        resolve(host), capability, nodeManagerVersion, physicalResource, clusterId);
 
     RMNode oldNode = this.rmContext.getRMNodes().putIfAbsent(nodeId, rmNode);
     if (oldNode == null) {

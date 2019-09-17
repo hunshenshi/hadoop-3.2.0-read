@@ -1186,7 +1186,7 @@ public class ZKRMStateStore extends RMStateStore {
     String reservationPath = getNodePath(planNodePath, reservationIdName);
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Removing reservationallocation " + reservationIdName
+      LOG.debug("Removing reservation allocation " + reservationIdName
           + " for" + " plan " + planName);
     }
 

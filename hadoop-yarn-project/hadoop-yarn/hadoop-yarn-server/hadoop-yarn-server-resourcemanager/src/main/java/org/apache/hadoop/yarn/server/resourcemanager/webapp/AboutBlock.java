@@ -42,6 +42,7 @@ public class AboutBlock extends HtmlBlock {
     ClusterInfo cinfo = new ClusterInfo(rm);
     info("Cluster overview").
         __("Cluster ID:", cinfo.getClusterId()).
+        __("Cluster timestamp:", cinfo.getTimestamp()).
         __("ResourceManager state:", cinfo.getState()).
         __("ResourceManager HA state:", cinfo.getHAState()).
         __("ResourceManager HA zookeeper connection state:",

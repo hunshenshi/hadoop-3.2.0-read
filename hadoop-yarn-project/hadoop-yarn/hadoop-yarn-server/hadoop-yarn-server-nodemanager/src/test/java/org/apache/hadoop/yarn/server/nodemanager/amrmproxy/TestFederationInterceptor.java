@@ -732,6 +732,8 @@ public class TestFederationInterceptor extends BaseAMRMProxyTest {
 
     response = interceptor.allocate(allocateRequest);
 
+    System.out.println("#############");
+    System.out.println(response.getApplicationPriority().toString());
     Assert.assertEquals(1, response.getAllocatedContainers().size());
     Assert.assertNotNull(response.getAvailableResources());
     Assert.assertEquals(1, response.getCompletedContainersStatuses().size());
@@ -740,6 +742,8 @@ public class TestFederationInterceptor extends BaseAMRMProxyTest {
     Assert.assertEquals(1, response.getNMTokens().size());
     Assert.assertEquals(1, response.getUpdatedContainers().size());
     Assert.assertEquals(1, response.getUpdateErrors().size());
+    Assert.assertNotNull(response.getApplicationPriority());
+    Assert.assertEquals(0, response.getApplicationPriority().getPriority());
   }
 
   @Test

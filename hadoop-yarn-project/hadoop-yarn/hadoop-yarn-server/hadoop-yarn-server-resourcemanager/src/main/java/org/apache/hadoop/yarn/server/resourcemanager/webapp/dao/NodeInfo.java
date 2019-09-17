@@ -65,6 +65,8 @@ public class NodeInfo {
   protected ResourceInfo availableResource;
   protected NodeAttributesInfo nodeAttributesInfo;
 
+  private String subCluster;
+
   public NodeInfo() {
   } // JAXB needs this
 
@@ -133,6 +135,9 @@ public class NodeInfo {
 
     // update node and containers resource utilization
     this.resourceUtilization = new ResourceUtilizationInfo(ni);
+
+    // add clusterId
+    this.subCluster = ni.getSubCluster();
   }
 
   public String getRack() {
@@ -230,6 +235,10 @@ public class NodeInfo {
   public String getAllocationTagsSummary() {
     return this.allocationTags == null ? "" :
         this.allocationTags.toString();
+  }
+
+  public String getSubCluster() {
+    return subCluster;
   }
 
   @VisibleForTesting

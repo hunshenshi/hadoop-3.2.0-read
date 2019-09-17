@@ -261,4 +261,52 @@ public class TestNodesListManager {
     return dispatcher;
   }
 
+  @Test
+  public void testClusterId() throws Exception {
+
+    YarnConfiguration conf = new YarnConfiguration();
+    conf.setStrings(YarnConfiguration.RM_CLUSTER_ID, "c1");
+
+//    MockRM rm = new MockRM(conf);
+//    rm.init(conf);
+//    NodesListManager nodesListManager = rm.getNodesListManager();
+//    nodesListManager.init(conf);
+//    nodesListManager.start();
+//
+//    NodesListManager.CachedResolver resolver =
+//            (NodesListManager.CachedResolver)nodesListManager.getResolver();
+//
+//    resolver.addToCache("testCachedResolverHost1", "1.1.1.1");
+//    resolver.addToCache("testCachedResolverHost2", "1.1.1.2");
+//    Assert.assertEquals("1.1.1.1",
+//            resolver.resolve("testCachedResolverHost1"));
+//    Assert.assertEquals("1.1.1.2",
+//            resolver.resolve("testCachedResolverHost2"));
+
+    RMNode rmnode1 = MockNodes.newNodeInfo(1, Resource.newInstance(28000, 8),
+            1, "testCachedResolverHost1", 1234);
+    RMNode rmnode2 = MockNodes.newNodeInfo(1, Resource.newInstance(28000, 8),
+            1, "testCachedResolverHost2", 1234, conf.get(YarnConfiguration.RM_CLUSTER_ID));
+    System.out.println(rmnode1.getSubCluster());
+    System.out.println(rmnode2.getSubCluster());
+
+    Assert.assertEquals("yarn_cluster", rmnode1.getSubCluster());
+    Assert.assertEquals("c1", rmnode2.getSubCluster());
+//    nodesListManager.handle(
+//            new NodesListManagerEvent(NodesListManagerEventType.NODE_USABLE,
+//                    rmnode1));
+//    Assert.assertNotEquals("1.1.1.1",
+//            resolver.resolve("testCachedResolverHost1"));
+//    Assert.assertEquals("1.1.1.2",
+//            resolver.resolve("testCachedResolverHost2"));
+//
+//    nodesListManager.handle(
+//            new NodesListManagerEvent(NodesListManagerEventType.NODE_USABLE,
+//                    rmnode2));
+//    Assert.assertNotEquals("1.1.1.1",
+//            resolver.resolve("testCachedResolverHost1"));
+//    Assert.assertNotEquals("1.1.1.2",
+//            resolver.resolve("testCachedResolverHost2"));
+
+  }
 }

@@ -218,6 +218,9 @@ public class WeightedPolicyInfo {
    * sub-clusters, values close to zero, indicate that the decision should be
    * mostly based on weights and practically ignore current load.
    *
+   * 对于使用此参数的策略，接近1的值表示大多数决策应基于当前观察到的来自各个子集群的净空，
+   * 值接近于零，表明决策应主要基于权重并且实际上忽略当前负载。
+   *
    * @return the value of headroomAlpha.
    */
   public float getHeadroomAlpha() {
